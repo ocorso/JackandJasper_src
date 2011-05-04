@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical" backgroundGradientAlphas="[1.0, 1.0]" backgroundGradientColors="[#A19F90, #F1ECD4]" currentState="login" xmlns:ns1="comp.*">
+	<mx:Script>
+		<![CDATA[
+			import flash.events.Event;
+			import flash.net.navigateToURL;
+			
+			import mx.controls.Alert;
+			import mx.rpc.events.ResultEvent;
+			
+			private const __BASE_URL:String = "http://jackandjasper.local";
+//			private const __BASE_URL:String = "http://jackandjasper.com";
+				
+			private function sendLogin(e:Event = null):void{
+				login_user.send();
+			}//end send login
+			private function checkLogin(e:ResultEvent):void{
+				if(e.result.loginsuccess == "yes") 
+				{
+					usn.text = "";
+					pwd.text = "";
+					currentState = "Logged In";
+				}
+				if(e.result.loginsuccess == "no")  
+				{
+					usn.text = "";
+					pwd.text = "";
+					var alert:Alert = new Alert();
+					alert= Alert.show("Invalid username/password");
+				}
+			}//end check login
+			private function logOut(e:Event=null):void{
+				currentState = 'login';	
+			}//end logout
+			private function goBackToSite(e:Event=null):void{
+				var req:URLRequest = new URLRequest(__BASE_URL);
+				flash.net.navigateToURL(req, "_self");
+			}//end logout
+			
+			private function SQLResultHandler(e:ResultEvent):void{
+				
+			}//end SQL Result handler
+		]]>
+	</mx:Script>
+	<mx:states>
+		<mx:State name="login">
+			<mx:RemoveChild target="{controls}"/>
+		</mx:State>
+		<mx:State name="Logged In">
+			<mx:RemoveChild target="{spacer1}"/>
+			<mx:RemoveChild target="{panel1}"/>
+			<mx:AddChild position="lastChild">
+				<ns1:CMSTree>
+				</ns1:CMSTree>
+			</mx:AddChild>
+		</mx:State>
+	</mx:states>
+	
+<!--+++++++++++++++++ HTTPService objects.++++++++++++++++-->
+	<mx:HTTPService id="getSQLService"
+		url="{__BASE_URL}/php/sql-to-xml.php"
+		result="SQLResultHandler(event)" />
+		
+	<mx:HTTPService id="login_user"
+		result="checkLogin(event)"
+		method="POST"
+		url="{__BASE_URL}/php/login-user.php"
+		useProxy="false">
+		<mx:request xmlns="">
+			<username>{usn.text}</username>
+			<password>{pwd.text}</password>
+		</mx:request>
+	</mx:HTTPService>
+
+<!--++++++++++++++++++++++++ RemoteObjects ++++++++++++++++-->	
+	
+
+<!--++++++++++++++++++++++++ Site content ++++++++++++++++++++-->	
+	<mx:Spacer height="200" id="spacer1"/>
+	<mx:Panel width="350" height="200" layout="absolute" title="Jack &amp; Jasper CMS" id="panel1">
+		<mx:Label x="10" y="10" text="Please Login:" id="label1"/>
+		<mx:Form x="10" y="36" id="form1" width="310">
+			<mx:FormItem label="Username:">
+				<mx:TextInput id="usn" width="175"/>					
+			</mx:FormItem>
+			<mx:FormItem label="Password:">
+				<mx:TextInput id="pwd" displayAsPassword="true" enter="sendLogin()" width="177"/>					
+			</mx:FormItem>
+			<mx:FormItem width="100%">
+				<mx:HBox>
+					<mx:Button label="Return to Site" click="goBackToSite()"/>
+					<mx:Button label="Submit" id="submit" click="sendLogin()"/>				
+				</mx:HBox>
+			</mx:FormItem>
+		</mx:Form>
+	</mx:Panel>
+	<mx:HBox id="controls">
+	<mx:Button id="logOutBtn" labelPlacement="right" click="logOut()" label="Log Out" themeColor="#009DFF" width="175" height="51" fontSize="16" fillAlphas="[1.0, 1.0]" fillColors="[#FFAEAE, #B96B6B]" color="#FFFFFF">
+		</mx:Button>
+	<mx:Button id="backToSiteBtn" labelPlacement="right" click="goBackToSite()" label="Go Back to Site" themeColor="#009DFF" width="175" height="51" fontSize="16" fillAlphas="[1.0, 1.0]" fillColors="[#FFAEAE, #B96B6B]" color="#FFFFFF">
+		</mx:Button>
+		
+	</mx:HBox>
+</mx:Application>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" 
+	width="80%" height="80%" 
+	title="Jack &amp; Jasper CMS" 
+	paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10">
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.binding.utils.BindingUtils;
+			import mx.collections.XMLListCollection;
+			import mx.rpc.events.ResultEvent;
+			import flash.events.Event;
+			
+			private const __BASE_URL:String = "http://jackandjasper.local";
+//			private const __BASE_URL:String = "http://jackandjasper.com";
+			
+			// A bindable property to hold the results of the HTTPService call
+			[Bindable]
+			private var xlc:XMLListCollection;
+			
+			[Bindable]
+            public var selectedNode:XML;
+            
+            [Bindable]
+            private var query:String;
+            
+            private function sendRQ():void{
+            	getSQLService.send();
+            }//end send request
+            private function updateRQ():void{
+            	updateSQLService.send();
+            }//end update request
+            
+			private function getSQLResultHandler(e:ResultEvent):void{
+				changeTxtBox.text = "";
+				var xml:XML = new XML(e.result);
+				xlc = new XMLListCollection(xml.children());		
+			}//end get SQL Result Handler
+		
+			// Event handler for the Tree control change event.
+            public function treeChanged(event:Event):void {
+                selectedNode=Tree(event.target).selectedItem as XML;
+            }//end treeChanged
+		]]>
+	</mx:Script>
+	<!--HTTP REQUESTS++++++++++++++++++++++-->
+	<mx:HTTPService id="getSQLService"
+		url="{__BASE_URL}/php/tables-to-xml.php"
+		result="getSQLResultHandler(event)" 
+		fault="mx.controls.Alert.show(event.fault.faultString)"
+		resultFormat="e4x"/>
+	<mx:HTTPService id="updateSQLService"
+		url="{__BASE_URL}/php/update-tables-to-xml.php"
+		result="getSQLResultHandler(event)" 
+		fault="mx.controls.Alert.show(event.fault.faultString)"
+		resultFormat="e4x"
+		method="POST"
+		useProxy="false">
+			<mx:request xmlns="">
+				<table>{selectedNode.@table}</table>
+				<column>{selectedNode.@column}</column>
+				<id>{selectedNode.@id}</id>
+				<content>{changeTxtBox.text}</content>
+			</mx:request>
+	</mx:HTTPService>
+		
+	<!--Panel Content+++++++++++++++++++++-->
+		<mx:HBox>
+			<mx:Label x="10" y="10" text="You are Logged In" id="label1" color="#FE4628"/>
+			<mx:Button label="Load It Up" click="sendRQ()">
+			</mx:Button>		
+			<mx:Button label="Lock It In" click="updateRQ()">
+			</mx:Button>
+		</mx:HBox>
+		<mx:Label text="*Please be sure to lock it in before switching screens or you will lose changes"  color="#966422"/>	
+		<mx:HDividedBox width="100%" height="100%" cornerRadius="5" borderStyle="solid">
+			 <mx:Tree id="myTree" width="25%" height="100%"
+			 		dataProvider="{xlc}"
+			 		labelField="@label"
+	                change="treeChanged(event)"/>
+	            <mx:TextArea id="changeTxtBox" height="100%" width="75%"
+	                text="{selectedNode.@value}"/>
+		</mx:HDividedBox>
+		
+</mx:Panel>
