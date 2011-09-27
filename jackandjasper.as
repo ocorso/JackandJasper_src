@@ -39,13 +39,12 @@ package {
 	[SWF (width="1000", height="643", backgroundColor="#ffffff", frameRate="30")]
 	public class jackandjasper extends MovieClip
 	{
-		private var global:Global;
-		private var site:Site;
-		private var footer:Footer;
-		private var bg:Background;
-		private var state:String;
-		private var id:Number = 0;
-		private const CRUSHPAD:String = "http://jackandjaspercellars.securewinemerchant.com";
+		private var global		:Global;
+		private var site		:Site;
+		private var footer		:Footer;
+		private var bg			:Background;
+		private var state		:String;
+		private var id			:Number = 0;
 		
 		public function jackandjasper()
 		{
@@ -57,8 +56,8 @@ package {
 			if (allFlashVars['state']){
 				state = allFlashVars.state;
 				id = allFlashVars.id;
-				trace("The currentState is now: "+ state);
-				trace("The id is now: "+ id);
+				Out.status(this, "The currentState is now: "+ state);
+				Out.status(this, "The id is now: "+ id);
 			}//end if we got the currentState in as a Flashvars attribute
 			global = Global.getInstance();
 			_setGlobals();
@@ -83,14 +82,13 @@ package {
 			bg.makeFullBG(stage.stageWidth, stage.stageHeight, site, footer);			
 		}//end resize
 		private function _setGlobals():void{
-			global.domain		= (Environment.DOMAIN == "localhost" || Environment.DOMAIN == "jackandjasper.local") ? "http://jackandjasper.local" : "http://www.jackandjasper.com";
+			global.domain		= (Environment.DOMAIN == "localhost" || Environment.DOMAIN == "jackandjasper.dev") ? "http://jackandjasper.dev" : "http://www.jackandjasper.com";
 			global.currentState = state;
 			global.id 			= id;
 			global.stage 		= this.stage;
 			global.bgColor 		= 0xa19f90;
 			global.bgColorTxt 	= 0xf1ecd4;
 			var getCSS:GetCSS 	= new GetCSS();
-			global.crushpadURL 	= CRUSHPAD;
 			global.addEventListener(GlobalEvent.PROPERTY_CHANGED, globalSetHandler);		
 		}//end setGlobals
 		

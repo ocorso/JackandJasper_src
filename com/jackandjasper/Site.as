@@ -27,18 +27,18 @@ package com.jackandjasper
 			super();
 			global = Global.getInstance();		
 			//initialize site and fade it on the stage
-			var site:Site_mc = new Site_mc();
-			site.alpha = 0;
-			site.brightness = -1;
-			mainProgressBar = site.progressBarInstance;
+			var site:Site_mc 	= new Site_mc();
+			site.alpha 			= 0;
+			site.brightness 	= -1;
+			mainProgressBar 	= site.progressBarInstance;
 			this.addChild(site);
 			TweenLite.to(site, 1.5, {alpha:1, brightness:0});
 			
 			//initialize states
-			slideshow = new Slideshow (site.mainContainerInstance, mainProgressBar);
-			people = new PeopleState(site.peopleContainerInstance, mainProgressBar);
-			story = new StoryState(site.storyContainerInstance, mainProgressBar);
-			vineyards = new VineyardsState(site.VineyardsContainerInstance, mainProgressBar);
+			slideshow 	= new Slideshow (site.mainContainerInstance, mainProgressBar);
+			people 		= new PeopleState(site.peopleContainerInstance, mainProgressBar);
+			story 		= new StoryState(site.storyContainerInstance, mainProgressBar);
+			vineyards 	= new VineyardsState(site.VineyardsContainerInstance, mainProgressBar);
 			
 			//show first state and listen for state changes			
 			if(global.currentState)		manageStates();

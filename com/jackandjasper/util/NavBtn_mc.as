@@ -1,11 +1,11 @@
 package com.jackandjasper.util
 {
+	import com.greensock.TweenLite;
+	
 	import flash.display.MovieClip;
 	import flash.events.MouseEvent;
 	import flash.net.URLRequest;
 	import flash.net.navigateToURL;
-	
-	import com.greensock.TweenLite;
 	
 	import lt.uza.utils.Global;
 
@@ -41,7 +41,7 @@ package com.jackandjasper.util
 					navToURL();
 					break;				
 				case "[object Acquire_mc]": global.currentState = "acquire";
-					navToURL();					
+					navToURL(true);					
 					break;				
 				case "[object Contact_mc]": global.currentState = "contact";
 					navToURL();					
@@ -51,19 +51,20 @@ package com.jackandjasper.util
 				case "[object Vineyards_mc]": global.currentState = "vineyards";
 					break;
 				case "[object Wines_mc]": global.currentState = "wines";
-					navToURL();					
+					navToURL(true);					
 					break;
 				default : trace(e.target);
 				
 			}//end switch
 		}//end click handler
-		private function navToURL():void{
-			var path:String;
-			if (global.currentState == "wines" || global.currentState == "acquire")
-				path = global.crushpadURL;
-			else path = "../pages/"+ global.currentState+".php";
+		
+		private function navToURL($isShop:Boolean = false):void{
+			
+			var path:String = $isShop ? "../pages/shop.php" : "../pages/"+ global.currentState+".php";
 			var request:URLRequest = new URLRequest(path);
 			flash.net.navigateToURL(request, "_self");
-		}
+		
+		}//end function
+		
 	}//end NavBtn_mc class
 }//end package
